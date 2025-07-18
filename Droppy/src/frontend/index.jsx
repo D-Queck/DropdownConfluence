@@ -1,24 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import ForgeReconciler, { Text } from '@forge/react';
-import { invoke } from '@forge/bridge';
+import React, { useState } from 'react';
+import ForgeReconciler, { Select, Lozenge, useConfig } from '@forge/react';
 
-const App = () => {
-  const [data, setData] = useState(null);
+const parseLines = (raw = '') =>
+  raw.split('\n').map(l => l.trim()).filter(Boolean).map(l => {
+    const [label, colour] = l.split('|').map(s => s.trim());
+    return { label, colour };
+  });
 
-  useEffect(() => {
-    invoke('getText', { example: 'my-invoke-variable' }).then(setData);
-  }, []);
+const DroppyMacro = () => {
+  const { options = '', isMulti = false } = useConfig() ?? {};
+  const items = parseLines(options);
+  const [value, setValue] = useState(isMulti ? [] : undefined);
+
+  const renderChip = val => {
+    const { colour = 'new' } = items.find(i => i.label === val) ?? {};
+    return (
+      <Lozenge appearance="custom" type={colour} key={val}>
+        {val}
+      </Lozenge>
+    );
+  };
 
   return (
     <>
-      <Text>Hello world!</Text>
-      <Text>{data ? data : 'Loading...'}</Text>
+      <Select
+        options={items.map(({ label }) => ({ label, value: label }))}
+        value={value}
+        onChange={setValue}
+        isMulti={isMulti}
+        placeholder="Choose"
+      />
+      {isMulti ? value?.map(renderChip) : value && renderChip(value)}
     </>
   );
 };
 
-ForgeReconciler.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+ForgeReconciler.render(<DroppyMacro />);      // kein render() mehr

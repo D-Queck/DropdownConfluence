@@ -1,20 +1,26 @@
-modules:
-  macro:
-    - key: droppy-hello-world-macro
-      resource: main
-      render: native
-      resolver:
-        function: resolver
-      title: Droppy
-  function:
-    - key: resolver
-      handler: index.handler
-resources:
-  - key: main
-    path: src/frontend/index.jsx
 app:
-  runtime:
-    name: nodejs22.x
-    memoryMB: 256
-    architecture: arm64
   id: ari:cloud:ecosystem::app/54074555-4274-4d37-a1d6-87956bad0b0f
+  runtime:
+    name: nodejs20.x
+
+modules:
+  macro: 
+    - key: droppy-field
+      resource: droppy-frontend
+      render: native
+      title: Droppy field
+      description: Configurable single‑ or multi‑select dropdown
+      icon: resources/icon.png
+      categories: [ formatting ]
+      config:
+        resource: droppy-config
+        render: native
+
+resources:
+  - key: droppy-frontend
+    path: src/frontend/index.jsx
+  - key: droppy-config
+    path: src/config.jsx
+
+permissions:
+  scopes: []

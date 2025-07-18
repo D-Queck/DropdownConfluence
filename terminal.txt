@@ -1,0 +1,3 @@
+forge lint      # keine Fehler mehr
+forge deploy
+forge install   # Macro lässt sich einfügen, Config‑Dialog öffnet sauber
